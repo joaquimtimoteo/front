@@ -1,41 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 
-const UserData = () => {
-  const [userData, setUserData] = useState(null);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem('access_token');
-        const response = await axios.get('http://localhost:8000/api/user/me', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUserData(response.data);
-      } catch (err) {
-        setError(err.response ? err.response.data.detail : 'Erro ao tentar acessar os dados do usuário.');
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  if (error) {
-    return <p style={{ color: 'red' }}>{error}</p>;
-  }
-
-  if (!userData) {
-    return <p>Carregando dados...</p>;
-  }
-
+const UserData = ({ userData }) => {
   return (
     <div>
-      <h2>Dados do Usuário</h2>
-      <p>Nome: {userData.name}</p>
-      <p>Email: {userData.email}</p>
-      <p>Usuário: {userData.username}</p>
-      <p>Status: {userData.is_active ? 'Ativado' : 'Desativado'}</p>
+      <h3>Detalhes do Usuário</h3>
+      <p>Email: {userData?.email}</p>
+      <p>Nome: {userData?.message}</p> {/* Supondo que "message" seja o nome do usuário */}
+      {/* Outros dados que você queira exibir */}
+      <button
+        onClick={() => {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          window.location.reload(); // Faz o refresh da página para voltar ao login
+        }}
+      >
+        Sair
+      </button>
     </div>
   );
 };

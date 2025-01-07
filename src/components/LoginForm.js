@@ -16,7 +16,7 @@ const LoginForm = ({ setUserData }) => {
 
     try {
         const response = await axios.post(
-            'https://register-and-login-rebornxboot.onrender.com/api/user/login',
+            'https://register-and-login-rebornxboot.onrender.com/api/user/signin',
             { email: email.trim(), password: password.trim() },
             {
                 headers: {
@@ -32,7 +32,7 @@ const LoginForm = ({ setUserData }) => {
             localStorage.setItem('refresh_token', response.data.refresh_token);
         }
 
-        setUserData(response.data);
+        setUserData(response.data); 
         setError(''); 
     } catch (err) {
         const errorDetail = err.response?.data?.detail;
@@ -48,7 +48,6 @@ const LoginForm = ({ setUserData }) => {
         }
     }
   };
-
 
   return (
     <div>

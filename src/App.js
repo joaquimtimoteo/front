@@ -10,7 +10,10 @@ function App() {
       {!userData ? (
         <LoginForm setUserData={setUserData} />
       ) : (
-        <UserData />
+        <div>
+          <h1>Bem-vindo, {userData?.message}!</h1>
+          <UserData userData={userData} />
+        </div>
       )}
     </div>
   );
