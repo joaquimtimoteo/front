@@ -1,6 +1,0 @@
-Severity	Code	Description	Project	File	Line	Suppression State	Details
-Error (active)	E0135	class "CalculoPi::MainForm" has no member "btnSair_Click"	Lab9	C:\Users\joaqu\source\repos\Lab9\Lab9\MyForm.cpp	193		
-Severity	Code	Description	Project	File	Line	Suppression State	Details
-Error	C1075	'{': no matching token found	Lab9	C:\Users\joaqu\source\repos\Lab9\Lab9\MyForm.cpp	268		
-Severity	Code	Description	Project	File	Line	Suppression State	Details
-Error (active)	E0067	expected a '}'	Lab9	C:\Users\joaqu\source\repos\Lab9\Lab9\MyForm.cpp	276		
