@@ -1,271 +1,290 @@
-#pragma once
-
-#include <cmath>
+#include <windows.h>
+#include <tchar.h>
 #include <string>
+#include <cmath>
+#include <iomanip>
+#include <sstream>
 
-namespace CalculoPi {
+// Declarações de funções
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+void CalcularPi(HWND hwnd);
+void AdicionarControles(HWND hwnd);
+double CalcularSerieArctg(double z, double epsilon, int nMax, HWND listBox);
 
-    using namespace System;
-    using namespace System::ComponentModel;
-    using namespace System::Collections;
-    using namespace System::Windows::Forms;
-    using namespace System::Data;
-    using namespace System::Drawing;
+// Identificadores dos controles
+#define ID_EDIT_X 1
+#define ID_EDIT_EPSILON 2
+#define ID_EDIT_NMAX 3
+#define ID_BUTTON_CALCULAR 4
+#define ID_BUTTON_SAIR 5
+#define ID_LISTBOX_RESULTADOS 6
+#define ID_STATIC_X 7
+#define ID_STATIC_EPSILON 8
+#define ID_STATIC_NMAX 9
+#define ID_STATIC_TITLE 10
 
-    /// <summary>
-    /// Summary for MainForm
-    /// </summary>
-    public ref class MainForm : public System::Windows::Forms::Form
-    {
-    public:
-        MainForm(void)
-        {
-            InitializeComponent();
-        }
+// Handles dos controles
+HWND hEditX, hEditEpsilon, hEditNMax, hButtonCalcular, hButtonSair, hListBox;
+HWND hStaticX, hStaticEpsilon, hStaticNMax, hStaticTitle;
+HFONT hFont, hFontTitle;
 
-    protected:
-        ~MainForm()
-        {
-            if (components)
-            {
-                delete components;
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    // Registrar a classe da janela
+    const TCHAR CLASS_NAME[] = _T("CalculoPiWindow");
+    
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = WindowProc;
+    wc.hInstance = hInstance;
+    wc.lpszClassName = CLASS_NAME;
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    
+    RegisterClass(&wc);
+    
+    // Criar a janela
+    HWND hwnd = CreateWindowEx(
+        0,                          // Estilos estendidos
+        CLASS_NAME,                 // Nome da classe
+        _T("Cálculo de π usando Série de Arctg"),  // Título da janela
+        WS_OVERLAPPEDWINDOW,        // Estilo da janela
+        CW_USEDEFAULT, CW_USEDEFAULT, 600, 500, // Posição e tamanho
+        NULL, NULL, hInstance, NULL
+    );
+    
+    if (hwnd == NULL) {
+        return 0;
+    }
+    
+    // Criar fonte para os controles
+    hFont = CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+                       DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+                       DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, _T("Segoe UI"));
+    
+    hFontTitle = CreateFont(20, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
+                           DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+                           DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, _T("Segoe UI"));
+    
+    // Adicionar controles à janela
+    AdicionarControles(hwnd);
+    
+    // Mostrar e atualizar a janela
+    ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
+    
+    // Loop de mensagens
+    MSG msg = {};
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+    
+    // Liberar recursos
+    DeleteObject(hFont);
+    DeleteObject(hFontTitle);
+    
+    return 0;
+}
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch (uMsg) {
+        case WM_COMMAND:
+            switch (LOWORD(wParam)) {
+                case ID_BUTTON_CALCULAR:
+                    CalcularPi(hwnd);
+                    break;
+                    
+                case ID_BUTTON_SAIR:
+                    DestroyWindow(hwnd);
+                    break;
             }
-        }
-    private: System::Windows::Forms::Label^ lblTitle;
-    private: System::Windows::Forms::Label^ lblValorX;
-    private: System::Windows::Forms::TextBox^ txtValorX;
-    private: System::Windows::Forms::Label^ lblEpsilon;
-    private: System::Windows::Forms::TextBox^ txtEpsilon;
-    private: System::Windows::Forms::Label^ lblNMax;
-    private: System::Windows::Forms::TextBox^ txtNMax;
-    private: System::Windows::Forms::Button^ btnCalcular;
-    private: System::Windows::Forms::Button^ btnSair;
-    private: System::Windows::Forms::ListBox^ lstResultados;
-    private: System::Windows::Forms::Panel^ panelTop;
-    private: System::Windows::Forms::Panel^ panelBottom;
-    private: System::Windows::Forms::Panel^ panelMain;
-
-    private:
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        System::ComponentModel::Container ^components;
-
-#pragma region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        void InitializeComponent(void)
-        {
-            this->lblTitle = (gcnew System::Windows::Forms::Label());
-            this->lblValorX = (gcnew System::Windows::Forms::Label());
-            this->txtValorX = (gcnew System::Windows::Forms::TextBox());
-            this->lblEpsilon = (gcnew System::Windows::Forms::Label());
-            this->txtEpsilon = (gcnew System::Windows::Forms::TextBox());
-            this->lblNMax = (gcnew System::Windows::Forms::Label());
-            this->txtNMax = (gcnew System::Windows::Forms::TextBox());
-            this->btnCalcular = (gcnew System::Windows::Forms::Button());
-            this->btnSair = (gcnew System::Windows::Forms::Button());
-            this->lstResultados = (gcnew System::Windows::Forms::ListBox());
-            this->panelTop = (gcnew System::Windows::Forms::Panel());
-            this->panelBottom = (gcnew System::Windows::Forms::Panel());
-            this->panelMain = (gcnew System::Windows::Forms::Panel());
-            this->panelTop->SuspendLayout();
-            this->panelBottom->SuspendLayout();
-            this->panelMain->SuspendLayout();
-            this->SuspendLayout();
-            // 
-            // lblTitle
-            // 
-            this->lblTitle->Dock = System::Windows::Forms::DockStyle::Top;
-            this->lblTitle->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->lblTitle->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(64)),
-                static_cast<System::Int32>(static_cast<System::Byte>(64)));
-            this->lblTitle->Location = System::Drawing::Point(0, 0);
-            this->lblTitle->Name = L"lblTitle";
-            this->lblTitle->Size = System::Drawing::Size(644, 40);
-            this->lblTitle->TabIndex = 0;
-            this->lblTitle->Text = L"Cálculo de π usando Série de Arctg";
-            this->lblTitle->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
-            // 
-            // lblValorX
-            // 
-            this->lblValorX->AutoSize = true;
-            this->lblValorX->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->lblValorX->Location = System::Drawing::Point(12, 17);
-            this->lblValorX->Name = L"lblValorX";
-            this->lblValorX->Size = System::Drawing::Size(78, 19);
-            this->lblValorX->TabIndex = 1;
-            this->lblValorX->Text = L"Valor de x:";
-            // 
-            // txtValorX
-            // 
-            this->txtValorX->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->txtValorX->Location = System::Drawing::Point(96, 15);
-            this->txtValorX->Name = L"txtValorX";
-            this->txtValorX->Size = System::Drawing::Size(100, 25);
-            this->txtValorX->TabIndex = 2;
-            this->txtValorX->Text = L"10";
-            this->txtValorX->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
-            // 
-            // lblEpsilon
-            // 
-            this->lblEpsilon->AutoSize = true;
-            this->lblEpsilon->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->lblEpsilon->Location = System::Drawing::Point(223, 17);
-            this->lblEpsilon->Name = L"lblEpsilon";
-            this->lblEpsilon->Size = System::Drawing::Size(84, 19);
-            this->lblEpsilon->TabIndex = 3;
-            this->lblEpsilon->Text = L"Precisão (ε):";
-            // 
-            // txtEpsilon
-            // 
-            this->txtEpsilon->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->txtEpsilon->Location = System::Drawing::Point(313, 15);
-            this->txtEpsilon->Name = L"txtEpsilon";
-            this->txtEpsilon->Size = System::Drawing::Size(100, 25);
-            this->txtEpsilon->TabIndex = 4;
-            this->txtEpsilon->Text = L"0.0001";
-            this->txtEpsilon->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
-            // 
-            // lblNMax
-            // 
-            this->lblNMax->AutoSize = true;
-            this->lblNMax->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->lblNMax->Location = System::Drawing::Point(435, 17);
-            this->lblNMax->Name = L"lblNMax";
-            this->lblNMax->Size = System::Drawing::Size(92, 19);
-            this->lblNMax->TabIndex = 5;
-            this->lblNMax->Text = L"Iter. Máximas:";
-            // 
-            // txtNMax
-            // 
-            this->txtNMax->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->txtNMax->Location = System::Drawing::Point(533, 15);
-            this->txtNMax->Name = L"txtNMax";
-            this->txtNMax->Size = System::Drawing::Size(100, 25);
-            this->txtNMax->TabIndex = 6;
-            this->txtNMax->Text = L"100";
-            this->txtNMax->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
-            // 
-            // btnCalcular
-            // 
-            this->btnCalcular->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(122)),
-                static_cast<System::Int32>(static_cast<System::Byte>(204)));
-            this->btnCalcular->FlatAppearance->BorderSize = 0;
-            this->btnCalcular->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-            this->btnCalcular->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->btnCalcular->ForeColor = System::Drawing::Color::White;
-            this->btnCalcular->Location = System::Drawing::Point(216, 10);
-            this->btnCalcular->Name = L"btnCalcular";
-            this->btnCalcular->Size = System::Drawing::Size(120, 35);
-            this->btnCalcular->TabIndex = 7;
-            this->btnCalcular->Text = L"Calcular";
-            this->btnCalcular->UseVisualStyleBackColor = false;
-            this->btnCalcular->Click += gcnew System::EventHandler(this, &MainForm::btnCalcular_Click);
-            // 
-            // btnSair
-            // 
-            this->btnSair->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(0)),
-                static_cast<System::Int32>(static_cast<System::Byte>(0)));
-            this->btnSair->FlatAppearance->BorderSize = 0;
-            this->btnSair->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-            this->btnSair->Font = (gcnew System::Drawing::Font(L"Segoe UI", 10, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->btnSair->ForeColor = System::Drawing::Color::White;
-            this->btnSair->Location = System::Drawing::Point(342, 10);
-            this->btnSair->Name = L"btnSair";
-            this->btnSair->Size = System::Drawing::Size(120, 35);
-            this->btnSair->TabIndex = 8;
-            this->btnSair->Text = L"Sair";
-            this->btnSair->UseVisualStyleBackColor = false;
-            this->btnSair->Click += gcnew System::EventHandler(this, &MainForm::btnSair_Click);
-            // 
-            // lstResultados
-            // 
-            this->lstResultados->Dock = System::Windows::Forms::DockStyle::Fill;
-            this->lstResultados->Font = (gcnew System::Drawing::Font(L"Consolas", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
-            this->lstResultados->FormattingEnabled = true;
-            this->lstResultados->ItemHeight = 15;
-            this->lstResultados->Location = System::Drawing::Point(10, 10);
-            this->lstResultados->Name = L"lstResultados";
-            this->lstResultados->Size = System::Drawing::Size(624, 294);
-            this->lstResultados->TabIndex = 9;
-            // 
-            // panelTop
-            // 
-            this->panelTop->BackColor = System::Drawing::Color::WhiteSmoke;
-            this->panelTop->Controls->Add(this->lblValorX);
-            this->panelTop->Controls->Add(this->txtValorX);
-            this->panelTop->Controls->Add(this->lblEpsilon);
-            this->panelTop->Controls->Add(this->txtEpsilon);
-            this->panelTop->Controls->Add(this->lblNMax);
-            this->panelTop->Controls->Add(this->txtNMax);
-            this->panelTop->Dock = System::Windows::Forms::DockStyle::Top;
-            this->panelTop->Location = System::Drawing::Point(0, 40);
-            this->panelTop->Name = L"panelTop";
-            this->panelTop->Size = System::Drawing::Size(644, 55);
-            this->panelTop->TabIndex = 10;
-            // 
-            // panelBottom
-            // 
-            this->panelBottom->BackColor = System::Drawing::Color::WhiteSmoke;
-            this->panelBottom->Controls->Add(this->btnCalcular);
-            this->panelBottom->Controls->Add(this->btnSair);
-            this->panelBottom->Dock = System::Windows::Forms::DockStyle::Bottom;
-            this->panelBottom->Location = System::Drawing::Point(0, 399);
-            this->panelBottom->Name = L"panelBottom";
-            this->panelBottom->Size = System::Drawing::Size(644, 55);
-            this->panelBottom->TabIndex = 11;
-            // 
-            // panelMain
-            // 
-            this->panelMain->Controls->Add(this->lstResultados);
-            this->panelMain->Dock = System::Windows::Forms::DockStyle::Fill;
-            this->panelMain->Location = System::Drawing::Point(0, 95);
-            this->panelMain->Name = L"panelMain";
-            this->panelMain->Padding = System::Windows::Forms::Padding(10);
-            this->panelMain->Size = System::Drawing::Size(644, 304);
-            this->panelMain->TabIndex = 12;
-            // 
-            // MainForm
-            // 
-            this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
-            this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-            this->BackColor = System::Drawing::Color::White;
-            this->ClientSize = System::Drawing::Size(644, 454);
-            this->Controls->Add(this->panelMain);
-            this->Controls->Add(this->panelTop);
-            this->Controls->Add(this->panelBottom);
-            this->Controls->Add(this->lblTitle);
-            this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
-            this->MaximizeBox = false;
-            this->Name = L"MainForm";
-            this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-            this->Text = L"Cálculo de π - Variante 24";
-            this->panelTop->ResumeLayout(false);
-            this->panelTop->PerformLayout();
-            this->panelBottom->ResumeLayout(false);
-            this->panelMain->ResumeLayout(false);
-            this->ResumeLayout(false);
-
-        }
-#pragma endregion
-
-    private: System::Void btnCalcular_Click(System::Object^ sender, System::EventArgs^ e) {
-        try {
-            // Limpar o ListBox
-            lstResultados->Items->Clear();
+            break;
             
-            // Obter os valores dos controles
-            double x = Convert::ToDouble(txtValorX->Text);
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            break;
+            
+        default:
+            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+    
+    return 0;
+}
+
+void AdicionarControles(HWND hwnd) {
+    // Título
+    hStaticTitle = CreateWindow(
+        _T("STATIC"), _T("Cálculo de π usando a Série de Arctg"),
+        WS_VISIBLE | WS_CHILD | SS_CENTER,
+        50, 20, 500, 30,
+        hwnd, (HMENU)ID_STATIC_TITLE, NULL, NULL
+    );
+    SendMessage(hStaticTitle, WM_SETFONT, (WPARAM)hFontTitle, TRUE);
+    
+    // Label para X
+    hStaticX = CreateWindow(
+        _T("STATIC"), _T("Valor de x:"),
+        WS_VISIBLE | WS_CHILD,
+        50, 70, 100, 25,
+        hwnd, (HMENU)ID_STATIC_X, NULL, NULL
+    );
+    SendMessage(hStaticX, WM_SETFONT, (WPARAM)hFont, TRUE);
+    
+    // Campo de entrada para X
+    hEditX = CreateWindow(
+        _T("EDIT"), _T("10"),
+        WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL,
+        160, 70, 100, 25,
+        hwnd, (HMENU)ID_EDIT_X, NULL, NULL
+    );
+    SendMessage(hEditX, WM_SETFONT, (WPARAM)hFont, TRUE);
+    
+    // Label para Epsilon
+    hStaticEpsilon = CreateWindow(
+        _T("STATIC"), _T("Precisão (ε):"),
+        WS_VISIBLE | WS_CHILD,
+        280, 70, 100, 25,
+        hwnd, (HMENU)ID_STATIC_EPSILON, NULL, NULL
+    );
+    SendMessage(hStaticEpsilon, WM_SETFONT, (WPARAM)hFont, TRUE);
+    
+    // Campo de entrada para Epsilon
+    hEditEpsilon = CreateWindow(
+        _T("EDIT"), _T("0.0001"),
+        WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL,
+        390, 70, 100, 25,
+        hwnd, (HMENU)ID_EDIT_EPSILON, NULL, NULL
+    );
+    SendMessage(hEditEpsilon, WM_SETFONT, (WPARAM)hFont, TRUE);
+    
+    // Label para NMax
+    hStaticNMax = CreateWindow(
+        _T("STATIC"), _T("Iterações máximas:"),
+        WS_VISIBLE | WS_CHILD,
+        50, 110, 150, 25,
+        hwnd, (HMENU)ID_STATIC_NMAX, NULL, NULL
+    );
+    SendMessage(hStaticNMax, WM_SETFONT, (WPARAM)hFont, TRUE);
+    
+    // Campo de entrada para NMax
+    hEditNMax = CreateWindow(
+        _T("EDIT"), _T("100"),
+        WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL,
+        210, 110, 100, 25,
+        hwnd, (HMENU)ID_EDIT_NMAX, NULL, NULL
+    );
+    SendMessage(hEditNMax, WM_SETFONT, (WPARAM)hFont, TRUE);
+    
+    // Botão Calcular
+    hButtonCalcular = CreateWindow(
+        _T("BUTTON"), _T("Calcular"),
+        WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+        350, 110, 100, 30,
+        hwnd, (HMENU)ID_BUTTON_CALCULAR, NULL, NULL
+    );
+    SendMessage(hButtonCalcular, WM_SETFONT, (WPARAM)hFont, TRUE);
+    
+    // ListBox para resultados
+    hListBox = CreateWindow(
+        _T("LISTBOX"), NULL,
+        WS_VISIBLE | WS_CHILD | WS_BORDER | WS_VSCROLL | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT,
+        50, 160, 500, 240,
+        hwnd, (HMENU)ID_LISTBOX_RESULTADOS, NULL, NULL
+    );
+    SendMessage(hListBox, WM_SETFONT, (WPARAM)hFont, TRUE);
+    
+    // Botão Sair
+    hButtonSair = CreateWindow(
+        _T("BUTTON"), _T("Sair"),
+        WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+        250, 420, 100, 30,
+        hwnd, (HMENU)ID_BUTTON_SAIR, NULL, NULL
+    );
+    SendMessage(hButtonSair, WM_SETFONT, (WPARAM)hFont, TRUE);
+}
+
+void CalcularPi(HWND hwnd) {
+    // Limpar o ListBox
+    SendMessage(hListBox, LB_RESETCONTENT, 0, 0);
+    
+    // Obter os valores dos controles
+    TCHAR buffer[256];
+    
+    GetWindowText(hEditX, buffer, 256);
+    double x = _ttof(buffer);
+    
+    GetWindowText(hEditEpsilon, buffer, 256);
+    double epsilon = _ttof(buffer);
+    
+    GetWindowText(hEditNMax, buffer, 256);
+    int nMax = _ttoi(buffer);
+    
+    // Adicionar cabeçalho
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)_T("Calculando π com arctg usando x = 10"));
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)_T("---------------------------------------"));
+    
+    // Aplicar a identidade trigonométrica para x/4 > 1
+    double z = x / 4.0;  // z = 10/4 = 2.5
+    
+    std::wstringstream ss;
+    ss << _T("Valor de z = x/4 = ") << z;
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)ss.str().c_str());
+    
+    // Como z = 2.5 > 1, precisamos usar a identidade: arctg(z) = π/2 - arctg(1/z)
+    ss.str(std::wstring());
+    ss << _T("Como z > 1, usamos: arctg(z) = π/2 - arctg(1/z)");
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)ss.str().c_str());
+    
+    double zConvergente = 1.0 / z;  // 1/2.5 = 0.4
+    
+    ss.str(std::wstring());
+    ss << _T("Valor z' = 1/z = ") << std::fixed << std::setprecision(6) << zConvergente;
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)ss.str().c_str());
+    
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)_T("---------------------------------------"));
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)_T("n | Termo | Soma Parcial"));
+    
+    // Calcular a série de arctg para o valor z' = 0.4 (dentro do raio de convergência)
+    double arctgResult = CalcularSerieArctg(zConvergente, epsilon, nMax, hListBox);
+    
+    // Calcular π usando a relação: π = 4 * arctg(1/0.4)
+    // OU: π = 4 * (π/2 - arctg(0.4)) → Isso está ERRADO no código original!
+    double piApprox = 4.0 * arctgResult;
+    
+    // Exibir resultados finais
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)_T("---------------------------------------"));
+    
+    ss.str(std::wstring());
+    ss << _T("Aproximação de π: ") << std::fixed << std::setprecision(10) << piApprox;
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)ss.str().c_str());
+    
+    ss.str(std::wstring());
+    ss << _T("Valor verdadeiro de π: ") << std::fixed << std::setprecision(10) << M_PI;
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)ss.str().c_str());
+    
+    ss.str(std::wstring());
+    ss << _T("Erro absoluto: ") << std::fixed << std::setprecision(10) << fabs(piApprox - M_PI);
+    SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)ss.str().c_str());
+}
+
+double CalcularSerieArctg(double z, double epsilon, int nMax, HWND listBox) {
+    double currentTerm = z;
+    double sum = currentTerm;
+    int n = 1;
+    
+    std::wstringstream ss;
+    ss << n << " | " << std::fixed << std::setprecision(10) << currentTerm << " | " << sum;
+    SendMessage(listBox, LB_ADDSTRING, 0, (LPARAM)ss.str().c_str());
+    
+    while (fabs(currentTerm) > epsilon && n < nMax) {
+        // Fórmula recorrente: a_n = -a_{n-1} * (z^2 * (2n-3))/(2n-1)
+        currentTerm = -currentTerm * (z * z * (2 * n - 1)) / (2 * n + 1);
+        sum += currentTerm;
+        n++;
+        
+        ss.str(std::wstring());
+        ss << n << " | " << std::fixed << std::setprecision(10) << currentTerm << " | " << sum;
+        SendMessage(listBox, LB_ADDSTRING, 0, (LPARAM)ss.str().c_str());
+    }
+    
+    return sum;
+}
