@@ -1,70 +1,140 @@
-# Getting Started with Create React App
+Vou guiá-lo passo a passo para criar este projeto do zero em um ambiente Windows usando Visual Studio:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Passo 1: Configurar o Ambiente de Desenvolvimento
+1. Instale o Visual Studio Community (versão gratuita)
+2. Durante a instalação, selecione "Desenvolvimento para Desktop com C++"
 
-## Available Scripts
+### Passo 2: Criar Novo Projeto
+1. Abra o Visual Studio
+2. File → New → Project
+3. Selecione "Win32 Project"
+4. Nome: CalculoPi
+5. Configuração do projeto:
+   - Tipo de aplicativo: Windows application
+   - Opções adicionais: Marque "Empty project"
 
-In the project directory, you can run:
+### Passo 3: Adicionar Arquivo de Código
+1. Clique com botão direito no projeto → Add → New Item
+2. Selecione "C++ File (.cpp)"
+3. Nome: Main.cpp
 
-### `npm start`
+### Passo 4: Estrutura do Código
+Copie e cole o código fornecido no arquivo Main.cpp. Vamos analisar as principais seções:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+#### 1. Inclusões e Declarações
+```cpp
+#include <windows.h>
+#include <tchar.h>
+#include <string>
+#include <cmath>
+#include <iomanip>
+#include <sstream>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+// Declarações de funções e controles
+```
+- Inclui as bibliotecas necessárias
+- Declara funções e identificadores de controles
 
-### `npm test`
+#### 2. Função WinMain
+```cpp
+int WINAPI WinMain(...) {
+    // Registra classe da janela
+    // Cria janela principal
+    // Cria fontes
+    // Adiciona controles
+    // Loop de mensagens
+}
+```
+- Ponto de entrada do aplicativo
+- Configura a janela principal
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### 3. WindowProc
+```cpp
+LRESULT CALLBACK WindowProc(...) {
+    // Trata eventos da janela
+    // Gerencia cliques nos botões
+}
+```
+- Processa mensagens do sistema
 
-### `npm run build`
+#### 4. AdicionarControles
+```cpp
+void AdicionarControles(HWND hwnd) {
+    // Cria todos os elementos da interface
+}
+```
+- Cria labels, campos de texto, botões e listbox
+- Define posições e fontes
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### 5. CalcularPi
+```cpp
+void CalcularPi(HWND hwnd) {
+    // Obtém valores dos campos
+    // Calcula usando série de arctg
+    // Exibe resultados no listbox
+}
+```
+- Lógica principal do cálculo
+- Usa identidade trigonométrica para convergência
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### 6. CalcularSerieArctg
+```cpp
+double CalcularSerieArctg(...) {
+    // Implementação da série de Taylor
+}
+```
+- Calcula arctan usando expansão em série
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Passo 5: Configurações do Projeto
+1. Clique com botão direito no projeto → Properties
+2. Em Configuration Properties → Linker → System:
+   - SubSystem: Windows (/SUBSYSTEM:WINDOWS)
+3. Em C/C++ → Preprocessor:
+   - Adicione "_USE_MATH_DEFINES" para usar M_PI
 
-### `npm run eject`
+### Passo 6: Compilar e Executar
+1. Build → Build Solution (F7)
+2. Debug → Start Without Debugging (Ctrl+F5)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Passo 7: Testar a Aplicação
+1. Insira valores:
+   - x: 10
+   - Precisão: 0.0001
+   - Iterações máximas: 100
+2. Clique em "Calcular"
+3. Observe os resultados no listbox
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Explicação da Interface
+```
++-----------------------------------------------------+
+| Cálculo de π usando Série de Arctg                  |
++-----------------------------------------------------+
+| Valor de x: [10]  Precisão (ε): [0.0001]            |
+| Iterações máximas: [100]  [Calcular]                |
++-----------------------------------------------------+
+| ListBox de resultados                               |
+| ...                                                 |
++-----------------------------------------------------+
+| [Sair]                                              |
++-----------------------------------------------------+
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Principais Funcionalidades
+1. Cálculo usando identidade trigonométrica:
+   - Para x=10, calcula arctg(10/4) = π/2 - arctg(4/10)
+2. Série de Taylor com critério de parada:
+   - Precisão (ε) ou número máximo de iterações
+3. Exibição detalhada dos termos da série
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Melhorias Possíveis
+1. Validação de entradas numéricas
+2. Formatação condicional de erros
+3. Exportação dos resultados
+4. Gráfico da convergência
 
-## Learn More
+### Solução de Problemas Comuns
+1. Erro LNK2019: Verifique se todas as funções estão declaradas
+2. Janela não aparece: Verifique o registro da classe da janela
+3. Caracteres inválidos: Garanta que o projeto está configurado para Unicode
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Este projeto demonstra a integração entre interface gráfica Win32 e cálculos numéricos complexos, mostrando como implementar uma aplicação científica com interface amigável no Windows.
