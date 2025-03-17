@@ -9,8 +9,62 @@ namespace Lab10 {
     }
 
     void MyForm::InitializeComponent() {
-        // Configuração da interface (mesmo código do exemplo anterior)
-        // ... (código da interface omitido para brevidade)
+        this->label1 = gcnew Label();
+        this->label2 = gcnew Label();
+        this->label3 = gcnew Label();
+        this->txtN = gcnew TextBox();
+        this->txtA = gcnew TextBox();
+        this->txtB = gcnew TextBox();
+        this->btnSolve = gcnew Button();
+        this->btnExit = gcnew Button();
+        this->lstOriginal = gcnew ListBox();
+        this->lstNew = gcnew ListBox();
+
+        // Configuração dos componentes
+        this->label1->AutoSize = true;
+        this->label1->Location = Point(12, 15);
+        this->label1->Text = L"n:";
+        
+        this->label2->AutoSize = true;
+        this->label2->Location = Point(12, 41);
+        this->label2->Text = L"a:";
+        
+        this->label3->AutoSize = true;
+        this->label3->Location = Point(12, 67);
+        this->label3->Text = L"b:";
+        
+        this->txtN->Location = Point(34, 12);
+        this->txtA->Location = Point(34, 38);
+        this->txtB->Location = Point(34, 64);
+        
+        this->btnSolve->Location = Point(15, 90);
+        this->btnSolve->Text = L"Resolver";
+        this->btnSolve->Click += gcnew EventHandler(this, &MyForm::btnSolve_Click);
+        
+        this->btnExit->Location = Point(96, 90);
+        this->btnExit->Text = L"Sair";
+        this->btnExit->Click += gcnew EventHandler(this, &MyForm::btnExit_Click);
+        
+        this->lstOriginal->Location = Point(15, 119);
+        this->lstOriginal->Size = System::Drawing::Size(120, 173);
+        
+        this->lstNew->Location = Point(159, 119);
+        this->lstNew->Size = System::Drawing::Size(120, 173);
+
+        // Adicionar componentes ao formulário
+        this->Controls->Add(this->label1);
+        this->Controls->Add(this->label2);
+        this->Controls->Add(this->label3);
+        this->Controls->Add(this->txtN);
+        this->Controls->Add(this->txtA);
+        this->Controls->Add(this->txtB);
+        this->Controls->Add(this->btnSolve);
+        this->Controls->Add(this->btnExit);
+        this->Controls->Add(this->lstOriginal);
+        this->Controls->Add(this->lstNew);
+        
+        this->Text = L"Laboratório 10 - Variante 24";
+        this->ClientSize = System::Drawing::Size(300, 320);
     }
 
     // Implementação das funções
@@ -66,7 +120,7 @@ namespace Lab10 {
         }
     }
 
-    // Eventos dos botões
+    // Evento do botão "Resolver"
     void MyForm::btnSolve_Click(Object^ sender, EventArgs^ e) {
         int n, a, b;
         if (!GetInt(100, txtN, "Tamanho inválido (1-100)!", n) ||
@@ -91,6 +145,7 @@ namespace Lab10 {
         }
     }
 
+    // Evento do botão "Sair"
     void MyForm::btnExit_Click(Object^ sender, EventArgs^ e) {
         this->Close();
     }
