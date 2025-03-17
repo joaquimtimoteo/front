@@ -1,5 +1,8 @@
 #include "MyForm.h"
 
+Лабораторная работа №9.2
+
+
 using namespace Lab;
 using namespace System;
 using namespace System::Windows::Forms;
