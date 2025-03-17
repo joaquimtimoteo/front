@@ -1,4 +1,4 @@
-Meu arquivo MyForm.h: #pragma once
+#pragma once
 
 namespace Lab {
 
@@ -9,24 +9,16 @@ namespace Lab {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	/// <summary>
-	/// Summary for MyForm
-	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
 	public:
 		MyForm(void)
 		{
 			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
+			// TODO: Adicione o código do construtor aqui
 		}
 
 	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
 		~MyForm()
 		{
 			if (components)
@@ -34,29 +26,22 @@ namespace Lab {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::Button^ button1;
-	protected:
-	private: System::Windows::Forms::TextBox^ textBox1;
-	private: System::Windows::Forms::Label^ label1;
-	private: System::Windows::Forms::TextBox^ txtX;
-	private: System::Windows::Forms::Button^ cmdCalc;
-	private: System::Windows::Forms::Button^ cmdExit;
-	private: System::Windows::Forms::TextBox^ txtResult;
-	private: System::Windows::Forms::TextBox^ txtLib;
-	private: System::Windows::Forms::Label^ lblDiff;
+	private: 
+		System::Windows::Forms::Button^ button1;  // Pode ser removido se não for necessário
+		System::Windows::Forms::TextBox^ textBox1;   // Pode ser removido se não for utilizado
+		System::Windows::Forms::Label^ label1;       // Pode ser removido se não for utilizado
 
+		System::Windows::Forms::TextBox^ txtX;
+		System::Windows::Forms::Button^ cmdCalc;
+		System::Windows::Forms::Button^ cmdExit;
+		System::Windows::Forms::TextBox^ txtResult;
+		System::Windows::Forms::TextBox^ txtLib;
+		System::Windows::Forms::Label^ lblDiff;
 
 	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
 		void InitializeComponent(void)
 		{
 			this->button1 = (gcnew System::Windows::Forms::Button());
@@ -70,7 +55,7 @@ namespace Lab {
 			this->lblDiff = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
-			// button1
+			// button1 (opcional: exemplo "Hello world")
 			// 
 			this->button1->Location = System::Drawing::Point(275, 96);
 			this->button1->Name = L"button1";
@@ -80,14 +65,14 @@ namespace Lab {
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
 			// 
-			// textBox1
+			// textBox1 (opcional)
 			// 
 			this->textBox1->Location = System::Drawing::Point(275, 53);
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(100, 20);
 			this->textBox1->TabIndex = 1;
 			// 
-			// label1
+			// label1 (opcional)
 			// 
 			this->label1->AutoSize = true;
 			this->label1->Location = System::Drawing::Point(272, 24);
@@ -103,6 +88,7 @@ namespace Lab {
 			this->txtX->Name = L"txtX";
 			this->txtX->Size = System::Drawing::Size(100, 20);
 			this->txtX->TabIndex = 3;
+			this->txtX->TextAlign = System::Windows::Forms::HorizontalAlignment::Right;
 			// 
 			// cmdCalc
 			// 
@@ -112,6 +98,7 @@ namespace Lab {
 			this->cmdCalc->TabIndex = 4;
 			this->cmdCalc->Text = L"Calcular";
 			this->cmdCalc->UseVisualStyleBackColor = true;
+			this->cmdCalc->Click += gcnew System::EventHandler(this, &MyForm::cmdCalc_Click);
 			// 
 			// cmdExit
 			// 
@@ -121,6 +108,7 @@ namespace Lab {
 			this->cmdExit->TabIndex = 5;
 			this->cmdExit->Text = L"Sair";
 			this->cmdExit->UseVisualStyleBackColor = true;
+			this->cmdExit->Click += gcnew System::EventHandler(this, &MyForm::cmdExit_Click);
 			// 
 			// txtResult
 			// 
@@ -128,6 +116,7 @@ namespace Lab {
 			this->txtResult->Name = L"txtResult";
 			this->txtResult->Size = System::Drawing::Size(100, 20);
 			this->txtResult->TabIndex = 6;
+			this->txtResult->Enabled = false;
 			// 
 			// txtLib
 			// 
@@ -135,6 +124,7 @@ namespace Lab {
 			this->txtLib->Name = L"txtLib";
 			this->txtLib->Size = System::Drawing::Size(100, 20);
 			this->txtLib->TabIndex = 7;
+			this->txtLib->Enabled = false;
 			// 
 			// lblDiff
 			// 
@@ -160,16 +150,26 @@ namespace Lab {
 			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->button1);
 			this->Name = L"MyForm";
-			this->Text = L"MyForm";
+			this->Text = L"Calculadora de Série";
 			this->ResumeLayout(false);
 			this->PerformLayout();
-
 		}
 #pragma endregion
+
+		// Eventos
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 		textBox1->Text = "Hello world.";
 	}
 	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
+		// Evento do label (opcional)
 	}
+
+	// Declaração dos novos eventos
+	private: System::Void cmdCalc_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void cmdExit_Click(System::Object^ sender, System::EventArgs^ e);
+
+	// Declaração dos métodos de cálculo
+	private: double CalcularSerie(double x);
+	private: double CalcularFuncao(double x);
 	};
 }
