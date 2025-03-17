@@ -65,3 +65,61 @@ void main()
     Application::SetCompatibleTextRenderingDefault(false);
     Application::Run(gcnew MyForm());
 }
+
+--------
+
+
+
+
+    #include "MyForm.h"
+using namespace Lab;
+using namespace System;
+using namespace System::Windows::Forms;
+
+// Cálculo da série alternada para ln(1+x)
+double MyForm::CalcularSerie(double x) {
+    double soma = 0;
+    int i = 1;
+    double termo;
+    do {
+        termo = Math::Pow(x, i) / i;
+        if (i % 2 == 0) termo *= -1; // Alterna o sinal
+        soma += termo;
+        i++;
+    } while (Math::Abs(termo) >= 0.0001); // Critério de parada
+    return soma;
+}
+
+// Cálculo usando a função da biblioteca
+double MyForm::CalcularFuncao(double x) {
+    return Math::Log(1 + x);
+}
+
+// Evento do botão "Calcular"
+Void MyForm::cmdCalc_Click(Object^ sender, EventArgs^ e) {
+    double x;
+    if (!Double::TryParse(txtX->Text, x) || x <= -1 || x > 1) {
+        MessageBox::Show("Insira um número entre (-1, 1].");
+        return;
+    }
+
+    double serie = CalcularSerie(x);
+    double biblioteca = CalcularFuncao(x);
+    double diferenca = Math::Abs(serie - biblioteca);
+
+    txtResult->Text = serie.ToString("F4");
+    txtLib->Text = biblioteca.ToString("F4");
+    lblDiff->Text = "Diferença: " + diferenca.ToString("F4");
+}
+
+// Evento do botão "Sair"
+Void MyForm::cmdExit_Click(Object^ sender, EventArgs^ e) {
+    this->Close();
+}
+
+// Função Main
+int main() {
+    Application::EnableVisualStyles();
+    Application::Run(gcnew MyForm());
+    return 0;
+}
