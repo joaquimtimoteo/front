@@ -67,7 +67,7 @@ namespace Lab10 {
         this->ClientSize = System::Drawing::Size(300, 320);
     }
 
-    // Implementação das funções
+    // Função para validar entrada de dados
     bool MyForm::GetInt(int MaxVal, TextBox^ textBox, String^ errorMessage, int% value) {
         try {
             int num = Convert::ToInt32(textBox->Text);
@@ -80,6 +80,7 @@ namespace Lab10 {
         }
     }
 
+    // Função para gerar array aleatório
     void MyForm::input(array<int>^ mas, int n, int a, int b) {
         Random^ rnd = gcnew Random();
         for (int i = 0; i < n; i++) {
@@ -87,11 +88,13 @@ namespace Lab10 {
         }
     }
 
+    // Verifica se um número é de dois dígitos (incluindo negativos)
     bool MyForm::isTwoDigit(int num) {
         int absNum = abs(num);
         return absNum >= 10 && absNum <= 99;
     }
 
+    // Calcula a média dos números de dois dígitos
     double MyForm::calculateAverage(array<int>^ mas, int n) {
         int sum = 0, count = 0;
         for (int i = 0; i < n; i++) {
@@ -103,6 +106,7 @@ namespace Lab10 {
         return count == 0 ? 0 : static_cast<double>(sum) / count;
     }
 
+    // Cria novo array com elementos > média
     int MyForm::task(array<int>^ mas, int n, double avg, array<int>^% newMas) {
         int k = 0;
         for (int i = 0; i < n; i++) {
@@ -113,6 +117,7 @@ namespace Lab10 {
         return k;
     }
 
+    // Exibe array em ListBox
     void MyForm::output(array<int>^ mas, int n, ListBox^ listBox) {
         listBox->Items->Clear();
         for (int i = 0; i < n; i++) {
