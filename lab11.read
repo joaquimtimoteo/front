@@ -1,0 +1,98 @@
+Com base nas instruções fornecidas no arquivo PDF e na descrição geral do trabalho, os componentes da interface gráfica para o desenvolvimento do projeto Windows Forms devem ser organizados de forma a permitir a interação do usuário com o programa. Abaixo está uma lista detalhada dos **componentes principais** que devem estar presentes na interface:
+
+---
+
+### **1. Componentes Básicos da Interface**
+Esses são os elementos essenciais que devem ser incluídos no formulário (`Form`) para garantir a funcionalidade do programa:
+
+#### **1.1. Campo de Entrada de Dados (`TextBox`)**
+- **Nome sugerido:** `txtInput`
+- **Descrição:** Um controle `TextBox` multilinha onde o usuário pode inserir os elementos do array inicial.
+- **Propriedades importantes:**
+  - `Multiline = true`: Permite várias linhas de entrada.
+  - `ScrollBars = Vertical`: Adiciona uma barra de rolagem vertical para facilitar a visualização de entradas longas.
+  - `Location` e `Size`: Posição e tamanho ajustados para ocupar uma área adequada na interface.
+
+#### **1.2. Botão para Resolver a Tarefa (`Button`)**
+- **Nome sugerido:** `btnSolve`
+- **Descrição:** Um botão que aciona o processamento dos dados inseridos no `TextBox`. Quando clicado, ele chama as funções responsáveis por ler o array, processá-lo e exibir os resultados.
+- **Propriedades importantes:**
+  - `Text = "Resolver Tarefa"` ou algo semelhante.
+  - `Location`: Posicionado abaixo ou ao lado do `TextBox`.
+
+#### **1.3. Lista de Saída (`ListBox`)**
+- **Nome sugerido:** `lstOutput`
+- **Descrição:** Um controle `ListBox` onde os resultados do processamento (como o novo array) serão exibidos.
+- **Propriedades importantes:**
+  - `Location` e `Size`: Posicionado ao lado ou abaixo do `TextBox` para facilitar a comparação entre entrada e saída.
+
+#### **1.4. Rótulo de Instruções (`Label`)**
+- **Nome sugerido:** `lblInstructions`
+- **Descrição:** Um rótulo que fornece instruções ao usuário sobre como usar o programa (por exemplo, "Insira os números do array separados por vírgulas ou um por linha").
+- **Propriedades importantes:**
+  - `Text`: Texto descritivo.
+  - `Location`: Posicionado acima do `TextBox`.
+
+---
+
+### **2. Componentes Opcionais**
+Dependendo da complexidade do projeto ou das exigências específicas da tarefa individual, outros componentes podem ser adicionados:
+
+#### **2.1. Botão para Limpar Campos (`Button`)**
+- **Nome sugerido:** `btnClear`
+- **Descrição:** Um botão que limpa os campos de entrada (`TextBox`) e saída (`ListBox`), permitindo que o usuário insira novos dados sem precisar reiniciar o programa.
+- **Propriedades importantes:**
+  - `Text = "Limpar"`.
+  - `Location`: Posicionado próximo ao botão `btnSolve`.
+
+#### **2.2. Rótulo para Exibir Mensagens de Status (`Label`)**
+- **Nome sugerido:** `lblStatus`
+- **Descrição:** Um rótulo que exibe mensagens de status ou erros (por exemplo, "Por favor, insira um array válido").
+- **Propriedades importantes:**
+  - `Text`: Atualizado dinamicamente pelo programa.
+  - `ForeColor`: Pode ser alterado para vermelho em caso de erro.
+
+#### **2.3. Caixa de Diálogo para Erros (`MessageBox`)**
+- **Descrição:** Embora não seja um componente visível na interface, o `MessageBox` pode ser usado para exibir mensagens de erro ou avisos (por exemplo, quando o usuário insere dados inválidos).
+
+---
+
+### **3. Exemplo de Layout da Interface**
+Aqui está um exemplo de como os componentes podem ser organizados no formulário:
+
+```
++-------------------------------------------------------------+
+| lblInstructions: "Insira os números do array (um por linha)" |
++-------------------------------------------------------------+
+| txtInput: [Campo de texto multilinha]                       |
++-------------------------------------------------------------+
+| btnSolve: [Resolver Tarefa]       btnClear: [Limpar]        |
++-------------------------------------------------------------+
+| lstOutput: [Lista de saída]                                |
++-------------------------------------------------------------+
+| lblStatus: "Mensagem de status ou erro"                    |
++-------------------------------------------------------------+
+```
+
+---
+
+### **4. Propriedades dos Componentes**
+A tabela abaixo resume as propriedades mais importantes para cada componente:
+
+| Componente      | Nome Sugerido | Propriedades Importantes                          | Descrição                                                                 |
+|------------------|---------------|---------------------------------------------------|---------------------------------------------------------------------------|
+| `TextBox`       | `txtInput`    | `Multiline = true`, `ScrollBars = Vertical`      | Campo para entrada de dados do array.                                    |
+| `Button`        | `btnSolve`    | `Text = "Resolver Tarefa"`                        | Botão para iniciar o processamento.                                      |
+| `Button`        | `btnClear`    | `Text = "Limpar"`                                 | Botão para limpar os campos de entrada e saída.                          |
+| `ListBox`       | `lstOutput`   |                                                   | Lista para exibir os resultados do processamento.                        |
+| `Label`         | `lblInstructions` | `Text = "Instruções para o usuário"`          | Rótulo para fornecer instruções.                                         |
+| `Label`         | `lblStatus`   | `Text = "Mensagem de status"`                    | Rótulo para exibir mensagens dinâmicas (opcional).                       |
+
+---
+
+### **5. Observações Finais**
+- Certifique-se de que todos os componentes estejam devidamente nomeados e posicionados para facilitar a usabilidade.
+- Use cores e fontes claras para melhorar a experiência do usuário.
+- Teste a interface com diferentes cenários (por exemplo, entradas válidas, inválidas e vazias) para garantir que ela funcione corretamente.
+
+Se precisar de mais detalhes ou tiver dúvidas sobre algum componente específico, sinta-se à vontade para perguntar!
