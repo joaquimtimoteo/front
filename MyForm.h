@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <msclr/marshal_cppstd.h>
-#include "task_din.h" // Inclui o cabeçalho personalizado
+#include <vector>
 
 namespace Lb11 {
 
@@ -31,5 +31,10 @@ namespace Lb11 {
         // Funções auxiliares
         int* inputArray(TextBox^ textBox, int& size);
         void outputArray(int* array, int size, ListBox^ listBox);
+
+        // Funções da Tarefa 24
+        bool isTwoDigit(int num);
+        double calculateAverage(int* array, int size, int& count);
+        int* task(int* array, int size, int& newSize);
     };
 }
