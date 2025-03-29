@@ -1,10 +1,10 @@
 #pragma once
 
 #include <Windows.h>
-#include <msclr/marshal_cppstd.h> // Para conversão de strings
-#include "task_din.h" // Inclui o cabeçalho personalizado com as funções do projeto
+#include <msclr/marshal_cppstd.h>
+#include "task_din.h" // Inclui o cabeçalho personalizado
 
-namespace MyNamespace {
+namespace Lb11 {
 
     using namespace System;
     using namespace System::Windows::Forms;
@@ -17,18 +17,19 @@ namespace MyNamespace {
         ~MyForm();
 
     private:
-        // Componentes da interface gráfica
-        TextBox^ txtInput; // Campo de texto para entrada de dados
-        Button^ btnSolve;  // Botão para resolver a tarefa
-        ListBox^ lstOutput; // Lista para exibir resultados
-        Label^ lblInstructions; // Rótulo para instruções
+        // Componentes da interface
+        TextBox^ txtInput;
+        Button^ btnSolve;
+        ListBox^ lstOutput;
+        Label^ lblInstructions;
+        Label^ lblStatus;
 
         // Funções de manipulação da interface
         void InitializeComponent();
-        void btnSolve_Click(System::Object^ sender, System::EventArgs^ e); // Evento do botão
+        void btnSolve_Click(System::Object^ sender, System::EventArgs^ e);
 
         // Funções auxiliares
-        int* inputArray(TextBox^ textBox, int& size); // Função para ler o array
-        void outputArray(int* array, int size, ListBox^ listBox); // Função para exibir o array
+        int* inputArray(TextBox^ textBox, int& size);
+        void outputArray(int* array, int size, ListBox^ listBox);
     };
 }
