@@ -1,158 +1,171 @@
 #include "MyForm.h"
+#include <cstdlib>
 
-namespace Lb11 {
+using namespace System;
+using namespace System::Windows::Forms;
+using namespace System::Drawing;
 
-    // Construtor e inicialização da interface
+
+namespace Lab10 {
     MyForm::MyForm(void) {
         InitializeComponent();
     }
 
-    MyForm::~MyForm() {
-        if (components) {
-            delete components;
-        }
-    }
-
     void MyForm::InitializeComponent() {
-        this->txtInput = gcnew TextBox();
+        this->label1 = gcnew Label();
+        this->label2 = gcnew Label();
+        this->label3 = gcnew Label();
+        this->txtN = gcnew TextBox();
+        this->txtA = gcnew TextBox();
+        this->txtB = gcnew TextBox();
         this->btnSolve = gcnew Button();
-        this->lstOutput = gcnew ListBox();
-        this->lblInstructions = gcnew Label();
-        this->lblStatus = gcnew Label();
+        this->btnExit = gcnew Button();
+        this->lstOriginal = gcnew ListBox();
+        this->lstNew = gcnew ListBox();
 
-        // Configuração do txtInput
-        this->txtInput->Location = Point(75, 86);
-        this->txtInput->Multiline = true;
-        this->txtInput->ScrollBars = ScrollBars::Vertical;
-        this->txtInput->Size = System::Drawing::Size(100, 100);
+        // Configuração dos componentes
+        this->label1->AutoSize = true;
+        this->label1->Location = Point(12, 15);
+        this->label1->Text = L"n:";
 
-        // Configuração do btnSolve
-        this->btnSolve->Location = Point(46, 180);
-        this->btnSolve->Text = "Resolver Tarefa";
+        this->label2->AutoSize = true;
+        this->label2->Location = Point(12, 41);
+        this->label2->Text = L"a:";
+
+        this->label3->AutoSize = true;
+        this->label3->Location = Point(12, 67);
+        this->label3->Text = L"b:";
+
+        this->txtN->Location = Point(34, 12);
+        this->txtA->Location = Point(34, 38);
+        this->txtB->Location = Point(34, 64);
+
+        this->btnSolve->Location = Point(15, 90);
+        this->btnSolve->Text = L"Resolver";
         this->btnSolve->Click += gcnew EventHandler(this, &MyForm::btnSolve_Click);
 
-        // Configuração do lstOutput
-        this->lstOutput->Location = Point(200, 86);
-        this->lstOutput->Size = System::Drawing::Size(120, 100);
+        this->btnExit->Location = Point(96, 90);
+        this->btnExit->Text = L"Sair";
+        this->btnExit->Click += gcnew EventHandler(this, &MyForm::btnExit_Click);
 
-        // Configuração do lblInstructions
-        this->lblInstructions->Location = Point(75, 39);
-        this->lblInstructions->Text = "Insira os números do array (um por linha):";
+        this->lstOriginal->Location = Point(15, 119);
+        this->lstOriginal->Size = System::Drawing::Size(120, 173);
 
-        // Adiciona componentes ao formulário
-        this->Controls->Add(txtInput);
-        this->Controls->Add(btnSolve);
-        this->Controls->Add(lstOutput);
-        this->Controls->Add(lblInstructions);
-        this->Text = "Tarefa 24";
-        this->Size = System::Drawing::Size(400, 300);
+        this->lstNew->Location = Point(159, 119);
+        this->lstNew->Size = System::Drawing::Size(120, 173);
+
+        // Adicionar componentes ao formulário
+        this->Controls->Add(this->label1);
+        this->Controls->Add(this->label2);
+        this->Controls->Add(this->label3);
+        this->Controls->Add(this->txtN);
+        this->Controls->Add(this->txtA);
+        this->Controls->Add(this->txtB);
+        this->Controls->Add(this->btnSolve);
+        this->Controls->Add(this->btnExit);
+        this->Controls->Add(this->lstOriginal);
+        this->Controls->Add(this->lstNew);
+
+        this->Text = L"Laboratório 10 - Variante 24";
+        this->ClientSize = System::Drawing::Size(300, 320);
     }
 
-    // Função para ler o array do TextBox
-    int* MyForm::inputArray(TextBox^ textBox, int& size) {
-        array<String^>^ lines = textBox->Lines;
-        size = lines->Length;
-
-        if (size == 0) {
-            lblStatus->Text = "Erro: Array vazio!";
-            return nullptr;
+    // Função para validar entrada de dados
+    bool MyForm::GetInt(int MaxVal, TextBox^ textBox, String^ errorMessage, int% value) {
+        try {
+            int num = Convert::ToInt32(textBox->Text);
+            if (num < 1 || num > MaxVal) throw gcnew Exception();
+            value = num;
+            return true;
         }
-
-        int* array = new int[size];
-        for (int i = 0; i < size; i++) {
-            array[i] = Convert::ToInt32(lines[i]);
-        }
-
-        return array;
-    }
-
-    // Função para exibir o array no ListBox
-    void MyForm::outputArray(int* array, int size, ListBox^ listBox) {
-        listBox->Items->Clear();
-
-        if (size == 0) {
-            listBox->Items->Add("O array resultante está vazio.");
-            return;
-        }
-
-        for (int i = 0; i < size; i++) {
-            listBox->Items->Add(array[i].ToString());
+        catch (...) {
+            MessageBox::Show(errorMessage);
+            return false;
         }
     }
 
-    // Função para verificar se um número é de dois dígitos
+    // Função para gerar array aleatório
+    void MyForm::input(array<int>^ mas, int n, int a, int b) {
+        Random^ rnd = gcnew Random();
+        for (int i = 0; i < n; i++) {
+            mas[i] = rnd->Next(a, b + 1);
+        }
+    }
+
+    // Verifica se um número é de dois dígitos (incluindo negativos)
     bool MyForm::isTwoDigit(int num) {
-        return (num >= 10 && num <= 99);
+        int absNum = abs(num);
+        return absNum >= 10 && absNum <= 99;
     }
 
-    // Função para calcular a média dos números de dois dígitos
-    double MyForm::calculateAverage(int* array, int size, int& count) {
-        double sum = 0.0;
-        count = 0;
-
-        for (int i = 0; i < size; i++) {
-            if (isTwoDigit(array[i])) {
-                sum += array[i];
+    // Calcula a média dos números de dois dígitos
+    double MyForm::calculateAverage(array<int>^ mas, int n) {
+        int sum = 0, count = 0;
+        for (int i = 0; i < n; i++) {
+            if (isTwoDigit(mas[i])) {
+                sum += mas[i];
                 count++;
             }
         }
-
-        return (count > 0) ? sum / count : 0.0;
+        return count == 0 ? 0 : static_cast<double>(sum) / count;
     }
 
-    // Função principal da Tarefa 24
-    int* MyForm::task(int* array, int size, int& newSize) {
-        newSize = 0;
-
-        // Passo 1: Calcular a média dos números de dois dígitos
-        int twoDigitCount = 0;
-        double average = calculateAverage(array, size, twoDigitCount);
-
-        if (twoDigitCount == 0) {
-            return nullptr; // Nenhum número de dois dígitos encontrado
-        }
-
-        // Passo 2: Filtrar elementos maiores que a média
-        std::vector<int> tempResult;
-        for (int i = 0; i < size; i++) {
-            if (array[i] > average) {
-                tempResult.push_back(array[i]);
+    // Cria novo array com elementos > média
+    int MyForm::task(array<int>^ mas, int n, double avg, array<int>^% newMas) {
+        int k = 0;
+        for (int i = 0; i < n; i++) {
+            if (mas[i] > avg) {
+                newMas[k++] = mas[i];
             }
         }
-
-        // Passo 3: Converter o vetor para um array dinâmico
-        newSize = tempResult.size();
-        if (newSize == 0) {
-            return nullptr;
-        }
-
-        int* result = new int[newSize];
-        for (int i = 0; i < newSize; i++) {
-            result[i] = tempResult[i];
-        }
-
-        return result;
+        return k;
     }
 
-    // Manipulador de eventos do botão "Resolver Tarefa"
-    void MyForm::btnSolve_Click(System::Object^ sender, System::EventArgs^ e) {
-        int size = 0;
-        int* array = inputArray(txtInput, size);
+    // Exibe array em ListBox
+    void MyForm::output(array<int>^ mas, int n, ListBox^ listBox) {
+        listBox->Items->Clear();
+        for (int i = 0; i < n; i++) {
+            listBox->Items->Add(mas[i].ToString());
+        }
+    }
 
-        if (array == nullptr || size == 0) {
-            MessageBox::Show("Por favor, insira um array válido.", "Erro", MessageBoxButtons::OK, MessageBoxIcon::Error);
+    // Evento do botão "Resolver"
+    void MyForm::btnSolve_Click(Object^ sender, EventArgs^ e) {
+        int n, a, b;
+        if (!GetInt(100, txtN, "Tamanho inválido (1-100)!", n) ||
+            !GetInt(1000, txtA, "Intervalo inválido!", a) ||
+            !GetInt(1000, txtB, "Intervalo inválido!", b) || a >= b) {
+            MessageBox::Show("Dados de entrada inválidos!");
             return;
         }
 
-        int newSize = 0;
-        int* newArray = task(array, size, newSize);
+        array<int>^ original = gcnew array<int>(n);
+        input(original, n, a, b);
+        output(original, n, lstOriginal);
 
-        outputArray(newArray, newSize, lstOutput);
+        double avg = calculateAverage(original, n);
+        array<int>^ newMas = gcnew array<int>(n);
+        int newSize = task(original, n, avg, newMas);
 
-        // Liberar memória
-        delete[] array;
-        if (newArray != nullptr) {
-            delete[] newArray;
+        if (newSize > 0) {
+            output(newMas, newSize, lstNew);
+        }
+        else {
+            MessageBox::Show("Nenhum elemento maior que a média!");
         }
     }
+
+    // Evento do botão "Sair"
+    void MyForm::btnExit_Click(Object^ sender, EventArgs^ e) {
+        this->Close();
+    }
+}
+
+[STAThread]
+int main(array<String^>^ args) {
+    Application::EnableVisualStyles();
+    Application::SetCompatibleTextRenderingDefault(false);
+    Lab10::MyForm form;
+    Application::Run(% form);
+    return 0;
 }
