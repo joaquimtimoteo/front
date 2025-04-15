@@ -1,11 +1,12 @@
 #pragma once
 
-namespace Lab12variante24 {
+namespace Lab12Variante24 {
 
     using namespace System;
     using namespace System::Windows::Forms;
-    using namespace System::Drawing; // Necessário para Point e Size
-    #include <ctime> // Necessário para srand e time
+    using namespace System::Drawing; // Para Point e Size
+    #include <cstdlib> // Para srand, rand
+    #include <ctime>   // Para time
 
     public ref class MyForm : public Form {
     public:
@@ -114,7 +115,7 @@ namespace Lab12variante24 {
         // Função para criar uma matriz dinâmica com números aleatórios
         double** CreateMatrix(int m, int n, double a, double b) {
             double** matrix = new double* [m];
-            srand(static_cast<unsigned int>(time(0)));
+            srand(static_cast<unsigned int>(time(nullptr))); // Corrigido
             for (int i = 0; i < m; i++) {
                 matrix[i] = new double[n];
                 for (int j = 0; j < n; j++) {
