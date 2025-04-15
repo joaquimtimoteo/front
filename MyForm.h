@@ -13,7 +13,7 @@ namespace Lab12Variante24 {
         MyForm(void) {
             InitializeComponent();
             components = nullptr;
-            srand(static_cast<unsigned int>(time(nullptr))); // Inicializa srand uma vez
+            srand(static_cast<unsigned int>(time(nullptr))); // Inicializa srand no construtor
         }
 
     protected:
@@ -55,36 +55,36 @@ namespace Lab12Variante24 {
             this->labelMatr2 = gcnew Label();
 
             // Configuração dos elementos
-            this->textM->Location = Point(27, 59);
-            this->textM->Size = Size(100, 20);
-            this->textN->Location = Point(27, 97);
-            this->textN->Size = Size(100, 20);
-            this->textA->Location = Point(27, 133);
-            this->textA->Size = Size(100, 20);
-            this->textB->Location = Point(27, 172);
-            this->textB->Size = Size(100, 20);
+            this->textM->Location = System::Drawing::Point(27, 59);
+            this->textM->Size = System::Drawing::Size(100, 20);
+            this->textN->Location = System::Drawing::Point(27, 97);
+            this->textN->Size = System::Drawing::Size(100, 20);
+            this->textA->Location = System::Drawing::Point(27, 133);
+            this->textA->Size = System::Drawing::Size(100, 20);
+            this->textB->Location = System::Drawing::Point(27, 172);
+            this->textB->Size = System::Drawing::Size(100, 20);
 
-            this->listBox1->Location = Point(304, 22);
-            this->listBox1->Size = Size(120, 95);
-            this->listBox2->Location = Point(304, 142);
-            this->listBox2->Size = Size(120, 95);
+            this->listBox1->Location = System::Drawing::Point(304, 22);
+            this->listBox1->Size = System::Drawing::Size(120, 95);
+            this->listBox2->Location = System::Drawing::Point(304, 142);
+            this->listBox2->Size = System::Drawing::Size(120, 95);
 
-            this->btnTask->Location = Point(27, 214);
+            this->btnTask->Location = System::Drawing::Point(27, 214);
             this->btnTask->Text = "Решить";
-            this->btnExit->Location = Point(127, 214);
+            this->btnExit->Location = System::Drawing::Point(127, 214);
             this->btnExit->Text = "Выход";
 
-            this->labelM->Location = Point(27, 36);
+            this->labelM->Location = System::Drawing::Point(27, 36);
             this->labelM->Text = "Número de Linhas (m):";
-            this->labelN->Location = Point(27, 74);
+            this->labelN->Location = System::Drawing::Point(27, 74);
             this->labelN->Text = "Número de Colunas (n):";
-            this->labelA->Location = Point(27, 110);
+            this->labelA->Location = System::Drawing::Point(27, 110);
             this->labelA->Text = "Limite Inferior (a):";
-            this->labelB->Location = Point(27, 149);
+            this->labelB->Location = System::Drawing::Point(27, 149);
             this->labelB->Text = "Limite Superior (b):";
-            this->labelMatr1->Location = Point(304, 2);
+            this->labelMatr1->Location = System::Drawing::Point(304, 2);
             this->labelMatr1->Text = "Matriz Original:";
-            this->labelMatr2->Location = Point(304, 122);
+            this->labelMatr2->Location = System::Drawing::Point(304, 122);
             this->labelMatr2->Text = "Matriz Processada:";
 
             this->btnTask->Click += gcnew EventHandler(this, &MyForm::btnTask_Click);
@@ -106,9 +106,10 @@ namespace Lab12Variante24 {
             this->Controls->Add(labelMatr2);
 
             this->Text = "Lab12 Variante 24";
-            this->ClientSize = Size(450, 280);
+            this->ClientSize = System::Drawing::Size(450, 280);
         }
 
+        // Função para criar uma matriz dinâmica com números aleatórios
         double** CreateMatrix(int m, int n, double a, double b) {
             double** matrix = new double* [m];
             for (int i = 0; i < m; i++) {
@@ -120,17 +121,19 @@ namespace Lab12Variante24 {
             return matrix;
         }
 
+        // Função para exibir uma matriz em um ListBox
         void OutputMatrix(double** matrix, int m, int n, ListBox^ listBox) {
             listBox->Items->Clear();
             for (int i = 0; i < m; i++) {
                 String^ row = "";
                 for (int j = 0; j < n; j++) {
-                    row += matrix[i][j].ToString("F2") + "\t";
+                    row += matrix[i][j].ToString("F2") + "\t"; // Adiciona tabulação
                 }
                 listBox->Items->Add(row);
             }
         }
 
+        // Função para liberar a memória alocada para a matriz
         void FreeMatrix(double** matrix, int m) {
             for (int i = 0; i < m; i++) {
                 delete[] matrix[i];
@@ -138,6 +141,7 @@ namespace Lab12Variante24 {
             delete[] matrix;
         }
 
+        // Função para encontrar os índices dos elementos máximo e mínimo na matriz
         void FindMinMax(double** matrix, int m, int n, int& i_max, int& j_max, int& i_min, int& j_min) {
             double max_val = matrix[0][0], min_val = matrix[0][0];
             i_max = j_max = i_min = j_min = 0;
@@ -158,15 +162,18 @@ namespace Lab12Variante24 {
             }
         }
 
+        // Função para trocar linhas ou colunas conforme especificado
         void SwapRowsOrColumns(double** matrix, int m, int n) {
             int i_max, j_max, i_min, j_min;
             FindMinMax(matrix, m, n, i_max, j_max, i_min, j_min);
 
             if (i_max != i_min) {
+                // Trocar linhas
                 double* temp = matrix[i_max];
                 matrix[i_max] = matrix[i_min];
                 matrix[i_min] = temp;
             } else {
+                // Trocar colunas
                 for (int i = 0; i < m; i++) {
                     double temp = matrix[i][j_max];
                     matrix[i][j_max] = matrix[i][j_min];
@@ -175,8 +182,10 @@ namespace Lab12Variante24 {
             }
         }
 
+        // Evento do botão "Решить"
         void btnTask_Click(Object^ sender, EventArgs^ e) {
             try {
+                // Validação de entrada
                 if (String::IsNullOrWhiteSpace(textM->Text) || String::IsNullOrWhiteSpace(textN->Text) ||
                     String::IsNullOrWhiteSpace(textA->Text) || String::IsNullOrWhiteSpace(textB->Text)) {
                     MessageBox::Show("Por favor, preencha todos os campos.");
@@ -198,16 +207,24 @@ namespace Lab12Variante24 {
                     return;
                 }
 
+                // Chamada das funções
                 double** matrix = CreateMatrix(m, n, a, b);
                 OutputMatrix(matrix, m, n, listBox1);
+
+                // Processamento
                 SwapRowsOrColumns(matrix, m, n);
+
+                // Saída
                 OutputMatrix(matrix, m, n, listBox2);
+
+                // Liberação de memória
                 FreeMatrix(matrix, m);
             } catch (Exception^ ex) {
                 MessageBox::Show("Erro: " + ex->Message);
             }
         }
 
+        // Evento do botão "Выход"
         void btnExit_Click(Object^ sender, EventArgs^ e) {
             this->Close();
         }
