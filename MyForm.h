@@ -4,11 +4,14 @@ namespace Lab12variante24 {
 
     using namespace System;
     using namespace System::Windows::Forms;
+    using namespace System::Drawing; // Necessário para Point e Size
+    #include <ctime> // Necessário para srand e time
 
     public ref class MyForm : public Form {
     public:
         MyForm(void) {
             InitializeComponent();
+            components = nullptr; // Inicializa components
         }
 
     protected:
@@ -18,6 +21,7 @@ namespace Lab12variante24 {
 
     private:
         // Declaração dos elementos do formulário
+        System::ComponentModel::Container^ components; // Variável components
         TextBox^ textM;
         TextBox^ textN;
         TextBox^ textA;
@@ -107,11 +111,10 @@ namespace Lab12variante24 {
             this->ClientSize = Size(450, 280);
         }
 
-    private:
         // Função para criar uma matriz dinâmica com números aleatórios
         double** CreateMatrix(int m, int n, double a, double b) {
             double** matrix = new double* [m];
-            srand(time(0));
+            srand(static_cast<unsigned int>(time(0)));
             for (int i = 0; i < m; i++) {
                 matrix[i] = new double[n];
                 for (int j = 0; j < n; j++) {
